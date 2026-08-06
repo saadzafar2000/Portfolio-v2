@@ -120,8 +120,8 @@ export async function POST(request: Request) {
     const resend = new Resend(apiKey);
     const fromAddress =
       process.env.RESEND_FROM ||
-      "Portfolio Contact <onboarding@resend.dev>";
-    const toAddress = destinationEmail || "onboarding@resend.dev";
+      "Portfolio Contact <contact@muhammadsaadzafar.com>";
+    const toAddress = destinationEmail || "sz9077089@gmail.com";
 
     const data = await resend.emails.send({
       from: fromAddress,
