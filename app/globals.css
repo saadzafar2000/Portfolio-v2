@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Colour, as raw RGB channels so Tailwind alpha modifiers work. */
+    --canvas: 4 6 10; /* #04060A deep obsidian */
+    --canvas-raised: 9 13 22; /* #090D16 surface */
+    --ink: 237 240 245;
+    --ink-muted: 141 148 163; /* 6.65:1 on canvas */
+    /*
+     * 4.76:1 on canvas. Was `88 96 112`, which measured 3.24:1 — under the 4.5:1
+     * AA floor, and this token drives `.label`: every eyebrow, date, form label
+     * and pill on the site, all set at 11–12px where it matters most.
+     */
+    --ink-faint: 115 123 139;
+    --line: 255 255 255;
+
+    /* The single accent — electric cyan. Change this to reskin the site. */
+    --accent: 0 240 255;
+    --accent-ink: 4 6 10;
+
+    /*
+     * Fluid type scale — holds from a 390px phone to an ultra-wide display.
+     * Each preferred value is solved to reach its min at 390px and its max at
+     * 1440px, so the curve is deliberate rather than eyeballed.
+     *
+     * Steps -2 to 0 are the reading sizes and stay put: 16px body and 11px mono
+     * labels are already the floor, and the labels only just clear AA contrast.
+     * The display steps came down ~15%.
+     */
+    --step--2: clamp(0.688rem, 0.67rem + 0.08vw, 0.75rem); /* 11–12  label */
+    --step--1: clamp(0.813rem, 0.78rem + 0.15vw, 0.9rem); /*  13–14  sm    */
+    --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem); /*      16–18  base  */
+    --step-1: clamp(1.125rem, 1.03rem + 0.38vw, 1.375rem); /* 18–22  lead  */
+    --step-2: clamp(1.375rem, 1.14rem + 0.95vw, 2rem); /*     22–32  h3    */
+    --step-3: clamp(1.875rem, 1.5rem + 1.52vw, 2.875rem); /*  30–46  h2    */
+    --step-4: clamp(2.5rem, 1.66rem + 3.43vw, 4.75rem); /*    40–76  h1    */
+    /* Unused — `text-display` is referenced nowhere. Left as-is. */
+    --step-5: clamp(3.25rem, 1.4rem + 9.25vw, 10rem);
+
+    /* Layout rhythm. */
+    --shell: 84rem;
+    --gutter: clamp(1.25rem, 4vw, 4rem);
+    --section-gap: clamp(4rem, 7vw, 7.5rem);
+    --nav-height: 5rem;
+  }
+
+  *,
+  *::before,
+  *::after {
+    border-color: rgb(var(--line) / 0.1);
+  }
+
+  html {
+    /* Lenis owns scrolling. Native smooth behaviour fights it. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Anchor targets clear the floating nav. */
+  [id] {
+    scroll-margin-top: calc(var(--nav-height) + 2rem);
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.9);
+    color: rgb(var(--accent-ink));
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--line) / 0.2) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--line) / 0.14);
+    border: 3px solid rgb(var(--canvas));
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--accent) / 0.4);
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@layer components {
+  /* The one container. Everything sits inside it. */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-gutter;
+  }
+
+  .section {
+    padding-block: var(--section-gap);
+  }
+
+  /* Mono metadata label — dates, tags, section eyebrows. */
+  .label {
+    @apply font-mono text-label uppercase tracking-[0.14em] text-ink-faint;
+  }
+
+  /* Mono badge — tech stack pills. */
+  .pill {
+    @apply inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-3 py-1
+           font-mono text-label uppercase tracking-[0.1em] text-ink-muted
+           transition-colors duration-500 ease-editorial;
+  }
+
+  .group:hover .pill,
+  .pill:hover {
+    @apply border-cyan-500/40 text-ink;
+  }
+
+  /* Hairline divider. */
+  .rule {
+    @apply h-px w-full border-0 bg-line/10;
+  }
+
+  /* Glassmorphism surface used by cards and the floating navbar. */
+  .glass {
+    @apply border border-white/10 bg-canvas-raised/60 backdrop-blur-xl;
+  }
+
+  /* Underline that wipes in from the left on hover. */
+  .link-wipe {
+    @apply relative inline-block;
+  }
+
+  .link-wipe::after {
+    content: "";
+    @apply absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 bg-current;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link-wipe:hover::after,
+  .link-wipe:focus-visible::after {
+    @apply origin-left scale-x-100;
+  }
+}
+
+@layer utilities {
+  /* Fine-grained film grain over the whole canvas. */
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: -50%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.022;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /*
+   * Cursor spotlight. The card writes --mx/--my on pointer move; this paints a
+   * cyan wash that follows it. Two layers: a soft fill and a bright edge that
+   * only shows through the 1px border via mask-composite.
+   */
+  .spotlight::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 rounded-[inherit] opacity-0;
+    background: radial-gradient(
+      22rem circle at var(--mx, 50%) var(--my, 50%),
+      rgb(var(--accent) / 0.1),
+      transparent 65%
+    );
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .spotlight::after {
+    content: "";
+    @apply pointer-events-none absolute inset-0 rounded-[inherit] opacity-0;
+    padding: 1px;
+    background: radial-gradient(
+      18rem circle at var(--mx, 50%) var(--my, 50%),
+      rgb(var(--accent) / 0.75),
+      transparent 60%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .spotlight:hover::before,
+  .spotlight:hover::after,
+  .spotlight:focus-within::before,
+  .spotlight:focus-within::after {
+    @apply opacity-100;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/*
+ * Motion is opt-out at the CSS layer; JS-driven animation is gated separately
+ * with useReducedMotion() so reveals resolve to their final state rather than
+ * being left mid-transition.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,132 +1,139 @@
-# Muhammad Saad Zafar - Portfolio Website
+# Muhammad Saad Zafar — Portfolio
 
 🚀 **Live Site**: [muhammadsaadzafar.com](https://muhammadsaadzafar.com)
 
-## 👨‍💻 About
-
-This is the source code for my personal portfolio website showcasing my work as a Full Stack Developer specializing in MERN Stack, Blockchain, and Web3 technologies.
+Statically generated Next.js site: an editorial landing page plus a case study
+route for each project.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18, TypeScript, Tailwind CSS
-- **Animations**: Framer Motion
-- **UI Components**: Shadcn/ui, Lucide React
-- **Build Tool**: Vite
-- **Deployment**: [Your hosting platform]
-
-## ✨ Features
-
-- 🎨 Modern, responsive design with glass morphism effects
-- 📱 Mobile-first approach with perfect mobile optimization
-- 🌙 Dark theme with gradient accents
-- ⚡ Fast loading with optimized performance
-- 🔍 SEO optimized for search engines
-- 📧 Working contact form with Web3Forms
-- 🎭 Smooth animations and micro-interactions
-- 🌐 Social media integration
-
-## 📂 Project Structure
-
-```
-├── public/                 # Static assets
-│   ├── lovable-uploads/   # Project images
-│   ├── favicon.ico        # Favicon
-│   ├── robots.txt         # SEO robots file
-│   └── sitemap.xml        # SEO sitemap
-├── src/
-│   ├── components/        # React components
-│   │   ├── ui/           # Reusable UI components
-│   │   ├── Hero.tsx      # Hero section
-│   │   ├── About.tsx     # About section
-│   │   ├── Experience.tsx # Work experience
-│   │   ├── Projects.tsx  # Project showcase
-│   │   ├── Technologies.tsx # Skills section
-│   │   ├── Contact.tsx   # Contact form
-│   │   └── Footer.tsx    # Footer with social links
-│   ├── pages/            # Page components
-│   ├── lib/              # Utility functions
-│   └── hooks/            # Custom React hooks
-├── index.html            # Main HTML file with SEO meta tags
-└── package.json          # Dependencies and scripts
-```
+| | |
+|---|---|
+| Framework | Next.js 16 (App Router, React 19) |
+| Language | TypeScript, `strict` |
+| Styling | Tailwind CSS 3.4 |
+| Animation | Motion (`motion/react`) — Framer Motion's current package name |
+| Smooth scroll | Lenis (`lenis` — the renamed `@studio-freight/lenis`) |
+| Type | Space Grotesk (display) · Inter (body) · JetBrains Mono (meta) |
+| Icons | Lucide React |
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/[your-username]/[repo-name].git
-cd [repo-name]
-```
-
-2. Install dependencies:
 ```bash
 npm install
+npm run dev        # dev server on http://localhost:3000
 ```
 
-3. Start the development server:
-```bash
-npm run dev
+| Command | |
+|---|---|
+| `npm run dev` | dev server |
+| `npm run build` | production build |
+| `npm run start` | serve the production build |
+| `npm run lint` | eslint |
+| `npm run typecheck` | `tsc --noEmit` |
+
+## 🔑 Environment
+
+Copy `.env.example` to `.env.local` and fill in:
+
+- `WEB3FORMS_ACCESS_KEY` — read only by `app/api/contact/route.ts`, server-side,
+  so it never reaches the browser. Without it the contact form returns a clear
+  "not configured" error instead of failing silently.
+
+## 📝 Content
+
+**No content is hardcoded in a page or component.** Everything is read through
+the async getters in `lib/content.ts`:
+
+```ts
+getSiteSettings()  getProjects()   getProject(slug)  getAdjacentProject(slug)
+getExperience()    getEducation()  getSkillGroups()  getCapabilities()
 ```
 
-4. Open [http://localhost:5173](http://localhost:5173) in your browser.
+They currently resolve from typed data in `lib/data/*`. Because they are already
+async and return plain serializable objects, moving to Sanity means rewriting
+the bodies of `lib/content.ts` only — every call site already awaits its data
+and never learns where it came from:
 
-## 📦 Build & Deployment
-
-```bash
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Lint code
-npm run lint
+```ts
+export async function getProjects(): Promise<Project[]> {
+  return sanityClient.fetch(groq`*[_type == "project"] | order(order asc){...}`);
+}
 ```
 
-## 🎯 SEO Features
+To edit content today, change `lib/data/*`. Types live in `lib/types.ts`.
 
-- ✅ Optimized meta tags and descriptions
-- ✅ Open Graph tags for social sharing
-- ✅ Twitter Card integration
-- ✅ Structured data markup
-- ✅ Sitemap.xml for search engines
-- ✅ Robots.txt configuration
-- ✅ Canonical URLs
-- ✅ Mobile-first responsive design
+## 📂 Structure
 
-## 📧 Contact Form
+```
+app/
+  layout.tsx                fonts, metadata, JSON-LD, chrome
+  page.tsx                  landing (server component)
+  projects/[slug]/page.tsx  case studies — generateStaticParams + generateMetadata
+  api/contact/route.ts      Web3Forms proxy, honeypot + rate limit
+  sitemap.ts robots.ts manifest.ts
+  icon.tsx apple-icon.tsx opengraph-image.tsx   generated at build time
+components/
+  layout/      nav, footer, smooth-scroll, cursor, backdrop, scroll-progress
+  sections/    hero, about (bento), experience, projects, project-card,
+               stack, contact, contact-form
+  case-study/  gallery, next-project
+  ui/          action, logo, reveal, kinetic-text, magnetic,
+               spotlight-card, social-buttons
+lib/
+  content.ts      the content API — the seam a CMS slots into
+  stack-layers.ts groups a project's stack into architecture layers
+  data/           typed content
+  types.ts        content shapes
+public/
+  brand/            SZ logo mark
+  lovable-uploads/  project screenshots
+```
 
-The contact form uses [Web3Forms](https://web3forms.com/) for handling form submissions. To set up:
+## 🎨 Design
 
-1. Get your access key from Web3Forms
-2. Replace the access key in `src/components/Contact.tsx`
+Editorial dark: deep obsidian canvas (`#04060A`) on `#090D16` surfaces, electric
+cyan (`#00F0FF`) as the only accent, 1px translucent hairline borders, mono
+metadata labels, and a fluid `clamp()` type scale that holds from 390px to
+ultra-wide.
 
-## 🌐 Social Media
+The accent is a single token — change `--accent` in `app/globals.css` and the
+whole site follows.
+
+The cursor spotlight on bento and project cards is the `.spotlight` utility in
+`globals.css`, driven by `--mx`/`--my` written directly to the node by
+`components/ui/spotlight-card.tsx` — pointer position never enters React state,
+which is what keeps it from re-rendering on every mousemove.
+
+## ♿ Motion & accessibility
+
+- All motion is gated on `prefers-reduced-motion`: reveals resolve to their
+  final state rather than animating, and Lenis is skipped entirely.
+- A `<noscript>` fallback in `app/layout.tsx` resolves the same reveals if the
+  JS bundle never loads, so content is never permanently invisible.
+- Skip-to-content link, `:focus-visible` rings on every interactive element,
+  `aria-live` status on the contact form.
+
+## 🎯 SEO
+
+- Per-route `metadata` with canonicals — the landing page and all six case
+  studies each have their own title, description, and OG image.
+- JSON-LD: `Person` + `WebSite` site-wide, `CreativeWork` per case study.
+- `app/sitemap.ts` generated from the content layer, so adding a project adds
+  its URL automatically.
+- Fully static: every page ships its content in the HTML response.
+
+## 🌐 Social
 
 - **LinkedIn**: [Muhammad Saad Zafar](https://www.linkedin.com/in/muhammad-saad-zafar-39017b189/)
 - **GitHub**: [saadzafar2000](https://github.com/saadzafar2000)
 - **Instagram**: [@saadzafar2000](https://www.instagram.com/saadzafar2000/)
-- **Twitter**: [@MSaadZafar2000](https://x.com/MSaadZafar2000)
+- **X**: [@MSaadZafar2000](https://x.com/MSaadZafar2000)
 
 ## 📄 License
 
-This project is private and proprietary. All rights reserved.
-
-## 🔄 Version History
-
-- **v1.0.0** - Initial portfolio launch
-  - Responsive design implementation
-  - SEO optimization
-  - Contact form integration
-  - Project showcase
-  - Social media integration
+Private and proprietary. All rights reserved.
 
 ---
 
-**Built with ❤️ by Muhammad Saad Zafar**
+**Built by Muhammad Saad Zafar**
