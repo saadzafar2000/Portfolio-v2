@@ -3,6 +3,22 @@ import type { ExperienceItem } from "@/lib/types";
 /** Most recent first. */
 export const experience: ExperienceItem[] = [
   {
+    id: "freelance-developer",
+    title: "Freelance Full Stack Developer",
+    company: "Freelance",
+    location: "Remote / Germany",
+    start: "Nov 2024",
+    end: "Present",
+    description:
+      "Architecting and delivering production web applications, SaaS platforms, and digital products for clients independently.",
+    achievements: [
+      "Built and deployed high-converting Next.js 16 web applications with WebGL and Tailwind CSS",
+      "Engineered real-time AI dashboards featuring multi-provider WebSocket streaming",
+      "Developed friction-free QR community discovery platforms operating live in production",
+      "Provided end-to-end full stack development from design systems to cloud deployment",
+    ],
+  },
+  {
     id: "interactbpo",
     title: "Full Stack Developer",
     company: "InteractBPO",
