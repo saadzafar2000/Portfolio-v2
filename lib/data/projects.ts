@@ -495,7 +495,6 @@ export const projects: Project[] = [
       },
     ],
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "OGL", "Motion"],
-    demoUrl: "https://muhammadsaadzafar.com",
     githubUrl: "https://github.com/saadzafar2000/Portfolio",
     order: 6,
     caseStudy: {
@@ -553,7 +552,6 @@ export const projects: Project[] = [
       "WebSocket",
       "PostgreSQL",
     ],
-    demoUrl: "/demo/ai-dashboard",
     order: 5,
     caseStudy: {
       problem:
