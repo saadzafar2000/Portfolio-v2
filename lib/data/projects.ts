@@ -495,7 +495,6 @@ export const projects: Project[] = [
       },
     ],
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "OGL", "Motion"],
-    githubUrl: "https://github.com/saadzafar2000/Portfolio",
     order: 6,
     caseStudy: {
       problem:
