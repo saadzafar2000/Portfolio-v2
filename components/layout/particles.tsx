@@ -75,6 +75,8 @@ export function Particles({ className }: { className?: string }) {
     let particles: Particle[] = [];
 
     const resize = () => {
+      const prevW = w;
+      const prevH = h;
       w = window.innerWidth;
       h = window.innerHeight;
       canvas.width = w * dpr;
@@ -83,8 +85,24 @@ export function Particles({ className }: { className?: string }) {
       canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = w < BREAKPOINT ? MOBILE_COUNT : BASE_COUNT;
-      particles = createParticles(count, w, h);
+      const targetCount = w < BREAKPOINT ? MOBILE_COUNT : BASE_COUNT;
+      if (particles.length === 0) {
+        particles = createParticles(targetCount, w, h);
+      } else {
+        if (prevW > 0 && prevH > 0) {
+          const scaleX = w / prevW;
+          const scaleY = h / prevH;
+          for (const p of particles) {
+            p.x *= scaleX;
+            p.y *= scaleY;
+          }
+        }
+        if (particles.length < targetCount) {
+          particles.push(...createParticles(targetCount - particles.length, w, h));
+        } else if (particles.length > targetCount) {
+          particles = particles.slice(0, targetCount);
+        }
+      }
     };
 
     resize();
@@ -156,7 +174,7 @@ export function Particles({ className }: { className?: string }) {
 
     const onResize = () => {
       resize();
-      if (!frame) draw();
+      draw();
     };
     window.addEventListener("resize", onResize);
 

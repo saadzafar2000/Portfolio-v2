@@ -198,7 +198,7 @@ export function Aurora({ className }: { className?: string }) {
 
     const resizeObserver = new ResizeObserver(() => {
       resize();
-      if (!frame) draw(performance.now());
+      draw(performance.now());
     });
     resizeObserver.observe(host);
 

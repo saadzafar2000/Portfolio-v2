@@ -553,6 +553,7 @@ export const projects: Project[] = [
       "WebSocket",
       "PostgreSQL",
     ],
+    demoUrl: "/demo/ai-dashboard",
     order: 5,
     caseStudy: {
       problem:

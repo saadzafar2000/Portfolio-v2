@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github, Globe } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -62,10 +62,23 @@ export function ProjectCard({
             <span className="label">
               {project.category} · {project.year}
             </span>
-            <ArrowUpRight
-              aria-hidden
-              className="h-4 w-4 shrink-0 text-ink-faint transition-all duration-500 ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent"
-            />
+            {project.demoUrl ? (
+              <a
+                href={project.demoUrl}
+                target={project.demoUrl.startsWith("http") ? "_blank" : undefined}
+                rel={project.demoUrl.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="relative z-30 text-ink-faint transition-colors duration-500 ease-editorial hover:text-accent"
+                title={`Visit ${project.title} live`}
+                aria-label={`Visit ${project.title} live`}
+              >
+                <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform duration-500 ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-accent/70 group-hover:text-accent" />
+              </a>
+            ) : (
+              <ArrowUpRight
+                aria-hidden
+                className="h-4 w-4 shrink-0 text-ink-faint transition-all duration-500 ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent"
+              />
+            )}
           </div>
 
           <h3 className="mt-4 font-display text-h3 font-bold tracking-tight">
@@ -84,16 +97,49 @@ export function ProjectCard({
             {project.summary}
           </p>
 
-          <ul className="mt-6 flex flex-wrap gap-2">
-            {project.stack.slice(0, 4).map((item) => (
-              <li key={item} className="pill">
-                {item}
-              </li>
-            ))}
-            {project.stack.length > 4 && (
-              <li className="pill">+{project.stack.length - 4}</li>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/10">
+            <ul className="flex flex-wrap gap-1.5">
+              {project.stack.slice(0, 3).map((item) => (
+                <li key={item} className="pill text-[10px] px-2.5 py-0.5">
+                  {item}
+                </li>
+              ))}
+              {project.stack.length > 3 && (
+                <li className="pill text-[10px] px-2 py-0.5">
+                  {`+${project.stack.length - 3}`}
+                </li>
+              )}
+            </ul>
+
+            {(project.demoUrl || project.githubUrl) && (
+              <div className="relative z-30 flex items-center gap-2">
+                {project.demoUrl && (
+                  <a
+                    href={project.demoUrl}
+                    target={project.demoUrl.startsWith("http") ? "_blank" : undefined}
+                    rel={project.demoUrl.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-mono font-medium text-cyan-300 transition-colors hover:bg-cyan-500/25 hover:text-cyan-100 hover:border-cyan-400/60 shadow-[0_0_12px_rgba(0,240,255,0.15)]"
+                    title="Visit Live Demo"
+                  >
+                    <Globe className="h-3.5 w-3.5" />
+                    <span>Live Demo</span>
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-mono font-medium text-ink-muted transition-colors hover:border-white/30 hover:text-ink hover:bg-white/10"
+                    title="View GitHub Repository"
+                  >
+                    <Github className="h-3.5 w-3.5" />
+                    <span>Code</span>
+                  </a>
+                )}
+              </div>
             )}
-          </ul>
+          </div>
         </div>
       </div>
     </SpotlightCard>
