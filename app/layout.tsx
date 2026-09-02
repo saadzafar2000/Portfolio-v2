@@ -6,6 +6,7 @@ import "./globals.css";
 
 import { AuroraWaves } from "@/components/layout/aurora-waves";
 import { Backdrop } from "@/components/layout/backdrop";
+import { Clarity } from "@/components/layout/clarity";
 import { Preloader } from "@/components/layout/preloader";
 import { Cursor } from "@/components/layout/cursor";
 import { Footer } from "@/components/layout/footer";
@@ -187,6 +188,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <Clarity />
       </body>
     </html>
   );
